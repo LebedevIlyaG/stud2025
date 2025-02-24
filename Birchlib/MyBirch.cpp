@@ -1,6 +1,8 @@
 
 #include "MyBirch.h"
 
+#include "new"
+
 Birch::Birch() : height (1), nol (numberOfLeaves)
 {
   numberOfBranches = 0;
@@ -13,11 +15,27 @@ Birch::Birch(double height_) : Birch::Birch()
   if (height_ <= 0)
     height = 1;
   else
-    this->height = height;
+    this->height = height_;
 }
 
-Birch::Birch(double height_, int numberOfBranches, int* numberOfLeaves) : Birch::Birch()
+Birch::Birch(double height_, int numberOfBranches_,
+  int* numberOfLeaves_) :  Birch::Birch(height_)
 {
+  if (numberOfBranches_ < 0)
+    numberOfBranches = 0;
+  else
+    numberOfBranches = numberOfBranches_;
+
+  if (numberOfLeaves_ == nullptr)
+  {
+    numberOfLeaves = new int[numberOfBranches] {0};
+  }
+  else
+  {
+    numberOfLeaves = new int[numberOfBranches];
+    for (int i = 0; i < numberOfBranches; i++)
+      numberOfLeaves[i] = numberOfLeaves_[i];
+  }
 }
 
 Birch::Birch(const Birch& p) : Birch::Birch()
