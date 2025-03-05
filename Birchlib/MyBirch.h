@@ -1,33 +1,26 @@
 #pragma once
-#include <iostream>
 
-class Birch
+#include <MyTree.h>
+
+class Birch : public Tree
 {
 protected:
   int*& nol;
-  double height;
-  int numberOfBranches;
-  int* numberOfLeaves;
 public:
   Birch();
   Birch(double height_);
-  Birch(double height_, int numberOfBranches, int* numberOfLeaves = nullptr);
+  Birch(double height_, int numberOfBranches, const int* numberOfLeaves = nullptr);
   Birch(const Birch& p);
   Birch(Birch&& p);
-  ~Birch();
+  virtual ~Birch();
 
-  double GetHeight();
-  int GetNumberOfBranches();
-  int* GetNumberOfLeaves();
+  virtual double GetHeight();
+  virtual int GetNumberOfBranches();
+  virtual int* GetNumberOfLeaves();
 
-  void SetHeight(double height_);
-  void SetNumberOfBranches(int numberOfBranches_);
-  void SetNumberOfLeaves(int* numberOfBranches_);
-
-  friend std::ostream& operator <<(std::ostream& o, Birch& b);
-  friend std::istream& operator >>(std::istream& i, Birch& b);
+  virtual void SetHeight(double height_);
+  virtual void SetNumberOfBranches(int numberOfBranches_);
+  virtual void SetNumberOfLeaves(int* numberOfBranches_);
 };
 
 
-std::ostream& operator <<(std::ostream& o, Birch& b);
-std::istream& operator >>(std::istream& i, Birch& b);

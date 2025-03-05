@@ -3,32 +3,28 @@
 
 #include "new"
 
-Birch::Birch() : height (1), nol (numberOfLeaves)
+Birch::Birch() : Tree::Tree(), nol(numberOfLeaves)
 {
-  numberOfBranches = 0;
 
-  numberOfLeaves = nullptr;
 }
 
 Birch::Birch(double height_) : Birch::Birch()
 {
-  if (height_ <= 0)
-    height = 1;
-  else
-    this->height = height_;
+  SetHeight(height_);
 }
 
 Birch::Birch(double height_, int numberOfBranches_,
-  int* numberOfLeaves_) :  Birch::Birch(height_)
+  const int* numberOfLeaves_) :  Birch::Birch(height_)
 {
   if (numberOfBranches_ < 0)
-    numberOfBranches = 0;
+    Tree::numberOfBranches = 0;
   else
-    numberOfBranches = numberOfBranches_;
+    this->numberOfBranches = numberOfBranches_;
 
   if (numberOfLeaves_ == nullptr)
   {
-    numberOfLeaves = new int[numberOfBranches] {0};
+    if (numberOfBranches_ > 0)
+      numberOfLeaves = new int[numberOfBranches] {0};
   }
   else
   {
@@ -40,10 +36,22 @@ Birch::Birch(double height_, int numberOfBranches_,
 
 Birch::Birch(const Birch& p) : Birch::Birch()
 {
+  this->height = p.height;
+  this->numberOfBranches = p.numberOfBranches;
+  if (numberOfBranches > 0)
+  {
+    this->numberOfLeaves = new int[numberOfBranches];
+    for (int i = 0; i < numberOfBranches; i++)
+      numberOfLeaves[i] = p.numberOfLeaves[i];
+  }
 }
 
 Birch::Birch(Birch&& p) : Birch::Birch()
 {
+  this->height = p.height;
+  this->numberOfBranches = p.numberOfBranches;
+  this->numberOfLeaves = p.numberOfLeaves;
+  p.numberOfLeaves = nullptr;
 }
 
 Birch::~Birch()
@@ -54,37 +62,59 @@ Birch::~Birch()
 
 double Birch::GetHeight()
 {
-  return 0.0;
+  return height;
 }
 
 int Birch::GetNumberOfBranches()
 {
-  return 0;
+  return numberOfBranches;
 }
 
 int* Birch::GetNumberOfLeaves()
 {
-  return nullptr;
+  return numberOfLeaves;
 }
 
 void Birch::SetHeight(double height_)
 {
+  if (height_ <= 0)
+    throw "Error Heigth!!!";
+  height = height_;
 }
 
 void Birch::SetNumberOfBranches(int numberOfBranches_)
 {
+  if (numberOfBranches_ < 0)
+    throw "Error numberOfBranches_!!!";
+
+  int* newNOL = new int[numberOfBranches_];
+  for (int i = 0; i < std::min(numberOfBranches, numberOfBranches_); i++)
+    newNOL[i] = numberOfLeaves[i];
+
+  delete[] numberOfLeaves;
+  numberOfLeaves = newNOL;
+  numberOfBranches = numberOfBranches_;
 }
 
-void Birch::SetNumberOfLeaves(int* numberOfBranches_)
+void Birch::SetNumberOfLeaves(int* numberOfLeaves_)
 {
+  if (numberOfLeaves_ == nullptr)
+  {
+    throw "numberOfLeaves_ == nullptr";
+  }
+  else
+  {
+    if (numberOfBranches > 0)
+    {
+      numberOfLeaves = new int[numberOfBranches];
+      for (int i = 0; i < numberOfBranches; i++)
+      {
+        if (numberOfLeaves_[i] >= 0)
+          numberOfLeaves[i] = numberOfLeaves_[i];
+        else
+          throw "numberOfLeaves_[i] < 0";
+      }
+    }
+  }
 }
 
-std::ostream& operator<<(std::ostream& o, Birch& b)
-{
-  return o;
-}
-
-std::istream& operator>>(std::istream& i, Birch& b)
-{
-  return i;
-}
